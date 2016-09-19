@@ -134,8 +134,10 @@ wss.on('connection', function(ws) {
               process.exit(1)
             }
 
-            ws.send(frameBody, {
-              binary: true
+            ws.send(frameBody, {binary: true}, function ack(error){
+              if (error) {
+                console.error(error)
+              }
             })
 
             cursor += frameBodyLength

@@ -4,7 +4,7 @@
 set -exo pipefail
 
 # Build project
-ndk-build NDK_DEBUG=1 1>&2
+#ndk-build NDK_DEBUG=1 1>&2
 
 # Figure out which ABI and SDK the device has
 abi=$(adb shell getprop ro.product.cpu.abi | tr -d '\r')
@@ -34,7 +34,12 @@ fi
 
 # Create a directory for our resources
 dir=/data/local/tmp/minicap-devel
-adb shell "mkdir $dir 2>/dev/null"
+# begin - JRH - 2016-09-14
+# The following command caused the script to fail:
+#adb shell "mkdir $dir 2>/dev/null"
+# But now it works, with one small change:
+adb shell "mkdir -p $dir 2>/dev/null"
+# end - JRH - 2016-09-14
 
 # Upload the binary
 adb push libs/$abi/$bin $dir
@@ -51,3 +56,5 @@ adb shell LD_LIBRARY_PATH=$dir $dir/$bin $args "$@"
 
 # Clean up
 adb shell rm -r $dir
+
+echo 'VIDEO-STARTED'
